@@ -6,8 +6,8 @@ local function create_throbber(buf, rowstart, colstart, rowend, colend, replacem
 	-- Setup marks
 	local chars = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
 	local namespace = vim.api.nvim_create_namespace('100')
-	local mark1 = vim.api.nvim_buf_set_extmark(buf, namespace, rowstart-1,  0, {hl_group='Comment',virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing'}}}})
-	local mark2 =	vim.api.nvim_buf_set_extmark(buf, namespace, rowend  -0, -0, {hl_group='Comment',virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing'}}}})
+	local mark1 = vim.api.nvim_buf_set_extmark(buf, namespace, rowstart-1,  0, {virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
+	local mark2 =	vim.api.nvim_buf_set_extmark(buf, namespace, rowend  -0, -0, {virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
 
 	-- Setup and run throbber animation
 	local updateInterval = require('100.timer').setInterval(150, function()
@@ -17,8 +17,8 @@ local function create_throbber(buf, rowstart, colstart, rowend, colend, replacem
 		local mark2data = vim.api.nvim_buf_get_extmark_by_id(buf, namespace, mark2, {details=true})
 
 		print(mark1data[1],mark1data[2])
-		vim.api.nvim_buf_set_extmark(buf, namespace, mark1data[1], mark1data[2], {id=mark1,virt_lines_above=true,right_gravity=true,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing'}}}})
-		vim.api.nvim_buf_set_extmark(buf, namespace, mark2data[1], mark2data[2], {id=mark2,virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing'}}}})
+		vim.api.nvim_buf_set_extmark(buf, namespace, mark1data[1], mark1data[2], {id=mark1,virt_lines_above=true,right_gravity=true,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
+		vim.api.nvim_buf_set_extmark(buf, namespace, mark2data[1], mark2data[2], {id=mark2,virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
 	end)
 
 	-- Run user defined replacementCallback immediatly with resolve and reject callbacks. if replacementCallback calls the resolve function, the content of the trobber will be replaced
