@@ -16,7 +16,6 @@ local function create_throbber(buf, rowstart, colstart, rowend, colend, replacem
 		local mark1data = vim.api.nvim_buf_get_extmark_by_id(buf, namespace, mark1, {details=true})
 		local mark2data = vim.api.nvim_buf_get_extmark_by_id(buf, namespace, mark2, {details=true})
 
-		print(mark1data[1],mark1data[2])
 		vim.api.nvim_buf_set_extmark(buf, namespace, mark1data[1], mark1data[2], {id=mark1,virt_lines_above=true,right_gravity=true,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
 		vim.api.nvim_buf_set_extmark(buf, namespace, mark2data[1], mark2data[2], {id=mark2,virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
 	end)
