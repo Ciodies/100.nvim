@@ -1,6 +1,6 @@
 local active_windows = {}
 
-local function create_window_visual(callback)
+local function create_window_replace(opts, callback)
 	local origBuffer = vim.api.nvim_get_current_buf()
 	local origSelection = require('100.buffer').getVisualContent()
 	local origSelectionMeta = require('100.buffer').getVisualContentMeta()
@@ -70,22 +70,32 @@ local function create_window_visual(callback)
   end, { buffer = win_buf, nowait = true })
 
 	vim.api.nvim_create_autocmd("BufWriteCmd", {group = win_group,buffer = win_buf, callback = function()
-		local context = {}
-		context.prompt = table.concat(vim.api.nvim_buf_get_lines(win_buf, 0, -1, false), "\n")
-		context.skills = "parse prompt for skills"
-		context.tools = "parse prompt for tools"
-		context.selection = origSelection
-		context.buffer = 1
+		local context = {
+			prompt = table.concat(vim.api.nvim_buf_get_lines(win_buf, 0, -1, false), "\n"),
+			skills = "parse prompt for skills",
+			tools = "parse prompt for tools",
+			selection = origSelection,
+			buffer = 1
+		}
+
+		local throbberOpts = {
+			buf=origBuffer,
+			rowstart=origSelectionMeta.rowstart,
+			colstart=origSelectionMeta.colstart,
+			rowend=origSelectionMeta.rowend,
+			colend=origSelectionMeta.colend,
+			description=context.prompt,
+		}
 
 		vim.api.nvim_win_close(win_id, true)
 
-		-- Run throbber with with callback responsible for generating text to replace visual selection
-		require('100.throbber').create_throbber(origBuffer, origSelectionMeta.rowstart, origSelectionMeta.colstart, origSelectionMeta.rowend, origSelectionMeta.colend, context.prompt, function(resolve, reject)
+		-- Run throbber with a callback responsible for generating text to replace visual selection
+		require('100.throbber').create_throbber(throbberOpts, function(resolve, reject)
 			return callback(context, resolve, reject)
 		end)
   end,})
 end
 
 return {
-	create_window_visual = create_window_visual,
+	create_window_replace = create_window_replace,
 }

@@ -1,45 +1,45 @@
 local active_throbbers = {}
 
-local function create_throbber(buf, rowstart, colstart, rowend, colend, description, replacementCallback)
+local function create_throbber(opts, callback)
 	local iteration = 1
 
 	-- Setup marks
 	local chars = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
 	local namespace = vim.api.nvim_create_namespace('100')
-	local mark1 = vim.api.nvim_buf_set_extmark(buf, namespace, rowstart-1,  0, {virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}, {{description,'Comment'}}}})
-	local mark2 =	vim.api.nvim_buf_set_extmark(buf, namespace, rowend  -0, -0, {virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
+	local mark1 = vim.api.nvim_buf_set_extmark(opts.buf, namespace, opts.rowstart-1,  0, {virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}, {{opts.description,'Comment'}}}})
+	local mark2 =	vim.api.nvim_buf_set_extmark(opts.buf, namespace, opts.rowend  -0, -0, {virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
 
 	-- Setup and run throbber animation
 	local updateInterval = require('100.timer').setInterval(150, function()
 		iteration = iteration % #chars + 1
 
-		local mark1data = vim.api.nvim_buf_get_extmark_by_id(buf, namespace, mark1, {details=true})
-		local mark2data = vim.api.nvim_buf_get_extmark_by_id(buf, namespace, mark2, {details=true})
+		local mark1data = vim.api.nvim_buf_get_extmark_by_id(opts.buf, namespace, mark1, {details=true})
+		local mark2data = vim.api.nvim_buf_get_extmark_by_id(opts.buf, namespace, mark2, {details=true})
 
-		vim.api.nvim_buf_set_extmark(buf, namespace, mark1data[1], mark1data[2], {id=mark1,virt_lines_above=true,right_gravity=true,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}, {{description,'Comment'}}}})
-		vim.api.nvim_buf_set_extmark(buf, namespace, mark2data[1], mark2data[2], {id=mark2,virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
+		vim.api.nvim_buf_set_extmark(opts.buf, namespace, mark1data[1], mark1data[2], {id=mark1,virt_lines_above=true,right_gravity=true,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}, {{opts.description,'Comment'}}}})
+		vim.api.nvim_buf_set_extmark(opts.buf, namespace, mark2data[1], mark2data[2], {id=mark2,virt_lines_above=true,right_gravity=false,virt_text={{''}},virt_lines={{{chars[iteration] .. ' Implementing','Comment'}}}})
 	end)
 
-	-- Run user defined replacementCallback immediatly with resolve and reject callbacks. if replacementCallback calls the resolve function, the content of the trobber will be replaced
-	replacementCallback(function(content)
+	-- Run user defined callback immediatly with resolve and reject callbacks. if user defined callback calls the resolve function, the content of the trobber will be replaced
+	callback(function(content)
 			vim.schedule(function()
 				require('100.timer').clearInterval(updateInterval)
 
-				local mark1data = vim.api.nvim_buf_get_extmark_by_id(buf, namespace, mark1, {details=true})
-				local mark2data = vim.api.nvim_buf_get_extmark_by_id(buf, namespace, mark2, {details=true})
+				local mark1data = vim.api.nvim_buf_get_extmark_by_id(opts.buf, namespace, mark1, {details=true})
+				local mark2data = vim.api.nvim_buf_get_extmark_by_id(opts.buf, namespace, mark2, {details=true})
 
-				vim.api.nvim_buf_set_text(buf, mark1data[1], mark1data[2], mark2data[1], mark2data[2], vim.fn.split(content, '\n', true))
+				vim.api.nvim_buf_set_text(opts.buf, mark1data[1], mark1data[2], mark2data[1], mark2data[2], vim.fn.split(content, '\n', true))
 
-				vim.api.nvim_buf_del_extmark(buf, namespace, mark1)
-				vim.api.nvim_buf_del_extmark(buf, namespace, mark2)
+				vim.api.nvim_buf_del_extmark(opts.buf, namespace, mark1)
+				vim.api.nvim_buf_del_extmark(opts.buf, namespace, mark2)
 			end)
-		end, 
+		end,
 		function()
 			vim.schedule(function()
 				require('100.timer').clearInterval(updateInterval)
 
-				vim.api.nvim_buf_del_extmark(buf, namespace, mark1)
-				vim.api.nvim_buf_del_extmark(buf, namespace, mark2)
+				vim.api.nvim_buf_del_extmark(opts.buf, namespace, mark1)
+				vim.api.nvim_buf_del_extmark(opts.buf, namespace, mark2)
 			end)
 		end)
 end

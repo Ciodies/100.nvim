@@ -5,16 +5,25 @@
 --TODO: reference skills
 --TODO: expand context
 
-local function setup(user_configurations)
-	print('setup called')
+local function create_window_search(opts, callback)
+	return require('100.window').create_window_search(opts, callback)
 end
 
-local function create_window_visual(callback)
-	return require('100.window').create_window_visual(callback)
+local function create_window_query(opts, callback)
+	return require('100.window').create_window_query(opts, callback)
 end
 
+local function create_window_insert(opts, callback)
+	return require('100.window').create_window_insert(opts, callback)
+end
+
+local function create_window_replace(opts, callback)
+	return require('100.window').create_window_replace(opts, callback)
+end
 
 return {
-	setup = setup,
-	create_window_visual = create_window_visual,
+	create_window_search = create_window_search,
+	create_window_query = create_window_query,
+	create_window_insert = create_window_insert,
+	create_window_replace = create_window_replace,
 }
