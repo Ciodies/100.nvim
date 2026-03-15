@@ -29,8 +29,37 @@ local function create_window_visual(callback)
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
 
+	-- Setup highlighting
+	local win_highlights = vim.api.nvim_create_namespace("100.window.hightlights")
+	vim.api.nvim_create_autocmd({"InsertLeave", "TextChanged", "TextChangedI" }, { group = win_group, buffer = win_buf, callback = function()
+    vim.api.nvim_buf_clear_namespace(win_buf, win_highlights, 0, -1)
+    local lines = vim.api.nvim_buf_get_lines(win_buf, 0, -1, false)
+
+		vim.fn.foreach({'@test', '@function'}, function(key,keyword)
+			vim.fn.foreach(lines, function(linenum,linestring)
+
+				-- Highlight keyword at beginning of line
+				if(string.sub(linestring, 1, #keyword + 1) == keyword .. " ") then
+					vim.api.nvim_buf_set_extmark( win_buf, win_highlights, linenum, 0, { end_col = #keyword, hl_group = "Search" })
+				end
+
+				-- Highlight keyword at end of line
+				if(string.sub(linestring, #linestring - #keyword, -1) == " " .. keyword) then
+					vim.api.nvim_buf_set_extmark( win_buf, win_highlights, linenum, #linestring - #keyword, { end_col = #linestring, hl_group = "Search" })
+				end
+
+				-- Highlight keyword between spaces
+				local startIndex,endIndex = string.find(linestring, " " .. keyword .. " ", 1, true)
+				while(startIndex) do
+					vim.api.nvim_buf_set_extmark( win_buf, win_highlights, linenum, startIndex, { end_col = endIndex-1, hl_group = "Search" })
+					startIndex,endIndex = string.find(linestring, " " .. keyword .. " ", endIndex, true)
+					end
+			end)
+		end)
+	end,})
+
 	-- Setup events
-  local win_group = vim.api.nvim_create_augroup("100_window" .. win_buf,{ clear = true })
+  local win_group = vim.api.nvim_create_augroup("100.window",{ clear = true })
   vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
 		vim.api.nvim_win_close(win_id, true)
