@@ -80,7 +80,7 @@ local function create_window_visual(callback)
 		vim.api.nvim_win_close(win_id, true)
 
 		-- Run throbber with with callback responsible for generating text to replace visual selection
-		require('100.throbber').create_throbber(origBuffer, origSelectionMeta.rowstart, origSelectionMeta.colstart, origSelectionMeta.rowend, origSelectionMeta.colend, function(resolve, reject)
+		require('100.throbber').create_throbber(origBuffer, origSelectionMeta.rowstart, origSelectionMeta.colstart, origSelectionMeta.rowend, origSelectionMeta.colend, context.prompt, function(resolve, reject)
 			return callback(context, resolve, reject)
 		end)
   end,})
