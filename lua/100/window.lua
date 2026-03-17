@@ -26,6 +26,7 @@ local function create_window_search(opts, callback)
 	vim.bo[win_buf].swapfile = false
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
+	vim.cmd("startinsert")
 
 	-- Setup highlighting
 	local win_highlights = vim.api.nvim_create_namespace("100.window.hightlights")
@@ -131,6 +132,7 @@ local function create_window_replace(opts, callback)
 	vim.bo[win_buf].swapfile = false
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
+	vim.cmd("startinsert")
 
 	-- Setup highlighting
 	local win_highlights = vim.api.nvim_create_namespace("100.window.hightlights")
