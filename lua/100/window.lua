@@ -63,6 +63,10 @@ local function create_window_search(opts, callback)
 		vim.api.nvim_win_close(win_id, true)
 	end,})
 
+  vim.keymap.set("n", "<Esc>", function()
+		vim.api.nvim_win_close(win_id, true)
+  end, { buffer = win_buf, nowait = true })
+
   vim.keymap.set("n", "q", function()
 		vim.api.nvim_win_close(win_id, true)
   end, { buffer = win_buf, nowait = true })
@@ -163,6 +167,10 @@ local function create_window_replace(opts, callback)
 		vim.api.nvim_del_augroup_by_id(win_group)
 		vim.api.nvim_win_close(win_id, true)
 	end,})
+
+  vim.keymap.set("n", "<Esc>", function()
+		vim.api.nvim_win_close(win_id, true)
+  end, { buffer = win_buf, nowait = true })
 
   vim.keymap.set("n", "q", function()
 		vim.api.nvim_win_close(win_id, true)
