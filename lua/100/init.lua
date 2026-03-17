@@ -13,6 +13,10 @@ local function create_window_query(opts, callback)
 	return require('100.window').create_window_query(opts, callback)
 end
 
+local function create_window_explain(opts, callback)
+	return require('100.window').create_window_explain(opts, callback)
+end
+
 local function create_window_insert(opts, callback)
 	return require('100.window').create_window_insert(opts, callback)
 end
@@ -24,6 +28,7 @@ end
 return {
 	create_window_search = create_window_search,
 	create_window_query = create_window_query,
+	create_window_explain = create_window_explain,
 	create_window_insert = create_window_insert,
 	create_window_replace = create_window_replace,
 }
