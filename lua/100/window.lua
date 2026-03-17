@@ -11,7 +11,7 @@ local function create_window_search(opts, callback)
     anchor = "NW",
     style = "minimal",
     border = "rounded",
-    title = "100",
+    title = " 100 Search ",
     title_pos = "center",
     zindex = 1,
   })
@@ -95,7 +95,7 @@ local function create_window_search(opts, callback)
 
 				print('100.nvim: Performing search. This may take some time')
 
-				vim.fn.setqflist({}, "r", { title = "100 Search", items = qfitems })
+				vim.fn.setqflist({}, "r", { title = "100-Search", items = qfitems })
 				vim.cmd("copen")
 			end)
 		end, reject)
@@ -103,7 +103,6 @@ local function create_window_search(opts, callback)
 end
 
 local function create_window_insert(opts, callback)
-
 	local origBuffer = vim.api.nvim_get_current_buf()
 	local origCursor = vim.fn.getpos("v")
 
@@ -117,7 +116,7 @@ local function create_window_insert(opts, callback)
     anchor = "NW",
     style = "minimal",
     border = "rounded",
-    title = "100",
+    title = " 100 Insert ",
     title_pos = "center",
     zindex = 1,
   })
@@ -221,7 +220,7 @@ local function create_window_replace(opts, callback)
     anchor = "NW",
     style = "minimal",
     border = "rounded",
-    title = "100",
+    title = " 100 Replace ",
     title_pos = "center",
     zindex = 1,
   })
