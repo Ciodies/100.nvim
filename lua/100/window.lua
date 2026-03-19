@@ -102,6 +102,84 @@ local function create_window_search(opts, callback)
   end,})
 end
 
+local function create_window_query(opts, callback)
+	-- Create window
+  local win_id = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
+    relative = "editor",
+    width = math.floor(vim.api.nvim_list_uis()[1].width * 2 / 3),
+    height =  math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    col = math.floor(vim.api.nvim_list_uis()[1].width * 1 / 6),
+    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    anchor = "NW",
+    style = "minimal",
+    border = "rounded",
+    title = " 100 Query ",
+    title_pos = "center",
+    zindex = 1,
+  })
+
+	local win_buf = vim.fn.bufnr(vim.api.nvim_win_get_buf(win_id))
+	vim.api.nvim_buf_set_name(win_buf, "100")
+	vim.bo[win_buf].filetype = "markdown"
+	vim.bo[win_buf].buftype = "acwrite"
+	vim.bo[win_buf].bufhidden = "wipe"
+	vim.bo[win_buf].buflisted = false
+	vim.bo[win_buf].swapfile = false
+	vim.wo[win_id].number = true
+  vim.wo[win_id].wrap = true
+	vim.cmd("startinsert")
+
+	-- Setup keymaps
+  vim.keymap.set("n", "<Esc>", function()
+		vim.api.nvim_win_close(win_id, true)
+  end, { buffer = win_buf, nowait = true })
+
+  vim.keymap.set("n", "q", function()
+		vim.api.nvim_win_close(win_id, true)
+  end, { buffer = win_buf, nowait = true })
+
+	-- Setup events
+  local win_group = vim.api.nvim_create_augroup("100.window",{ clear = true })
+	vim.api.nvim_create_autocmd({"BufModifiedSet"}, { group = win_group, buffer = win_buf, callback = function()
+		vim.bo[win_buf].modified = false -- To enable :q and :w with acwrite
+	end,})
+
+  vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
+		vim.api.nvim_del_augroup_by_id(win_group)
+		vim.api.nvim_buf_delete(win_buf, { unload = true })
+		vim.api.nvim_win_close(win_id, true)
+	end,})
+
+	vim.api.nvim_create_autocmd("BufWriteCmd", {group = win_group,buffer = win_buf, callback = function()
+		local context = {
+			prompt = table.concat(vim.api.nvim_buf_get_lines(win_buf, 0, -1, false), "\n"),
+			skills = "parse prompt for skills",
+			tools = "parse prompt for tools",
+			buffer = 1
+		}
+
+		-- Display Processing...
+		local win_processing = vim.api.nvim_create_namespace("100.window.hightlights")
+		vim.api.nvim_win_set_height(win_id, 1)
+		vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, {'Processing...'})
+		vim.api.nvim_buf_set_extmark( win_buf, win_processing, 0, 0, { end_row = 1, hl_group = "Comment" })
+
+		-- Run user defined callback for searching project
+		return callback(context, function(content)
+			vim.schedule(function()
+				if (vim.api.nvim_buf_is_valid(win_buf)) then
+					vim.api.nvim_buf_clear_namespace(win_buf, win_processing, 0, -1)
+					vim.api.nvim_win_set_height(win_id, math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3))
+
+					local lines = vim.fn.split(content, '\n', true)
+					vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, lines)
+					vim.api.nvim_win_set_cursor(win_id, {1, 1})
+				end
+			end)
+		end, reject)
+  end,})
+end
+
 local function create_window_insert(opts, callback)
 	local origBuffer = vim.api.nvim_get_current_buf()
 	local origCursor = vim.fn.getpos("v")
@@ -308,6 +386,7 @@ end
 
 return {
 	create_window_search = create_window_search,
+	create_window_query = create_window_query,
 	create_window_insert = create_window_insert,
 	create_window_replace = create_window_replace,
 }
