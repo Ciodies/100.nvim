@@ -74,7 +74,6 @@ local function create_window_search(opts, callback)
 
   vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
-		vim.api.nvim_buf_delete(win_buf, { unload = true })
 		vim.api.nvim_win_close(win_id, true)
 	end,})
 
@@ -156,7 +155,6 @@ local function create_window_query(opts, callback)
 
   vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
-		vim.api.nvim_buf_delete(win_buf, { unload = true })
 		vim.api.nvim_win_close(win_id, true)
 	end,})
 
@@ -240,7 +238,6 @@ local function create_window_explain(opts, callback)
 
   vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
-		vim.api.nvim_buf_delete(win_buf, { unload = true })
 		vim.api.nvim_win_close(win_id, true)
 	end,})
 
@@ -352,7 +349,6 @@ local function create_window_insert(opts, callback)
 
   vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
-		vim.api.nvim_buf_delete(win_buf, { unload = true })
 		vim.api.nvim_win_close(win_id, true)
 	end,})
 
@@ -464,7 +460,6 @@ local function create_window_replace(opts, callback)
 
   vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
-		vim.api.nvim_buf_delete(win_buf, { unload = true })
 		vim.api.nvim_win_close(win_id, true)
 	end,})
 
