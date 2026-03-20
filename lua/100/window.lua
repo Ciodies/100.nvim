@@ -4,10 +4,10 @@ local function create_window_search(opts, callback)
 	-- Create window
   local win_id = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
     relative = "editor",
-    width = math.floor(vim.api.nvim_list_uis()[1].width * 2 / 3),
-    height =  math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    width = math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6),
+    height =  math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4),
     col = math.floor(vim.api.nvim_list_uis()[1].width * 1 / 6),
-    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 4 - 1),
     anchor = "NW",
     style = "minimal",
     border = "rounded",
@@ -113,10 +113,10 @@ local function create_window_query(opts, callback)
 	-- Create window
   local win_id = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
     relative = "editor",
-    width = math.floor(vim.api.nvim_list_uis()[1].width * 2 / 3),
-    height =  math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    width = math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6),
+    height =  math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4),
     col = math.floor(vim.api.nvim_list_uis()[1].width * 1 / 6),
-    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 4 - 1),
     anchor = "NW",
     style = "minimal",
     border = "rounded",
@@ -177,7 +177,7 @@ local function create_window_query(opts, callback)
 			vim.schedule(function()
 				if (vim.api.nvim_buf_is_valid(win_buf)) then
 					vim.api.nvim_buf_clear_namespace(win_buf, win_processing, 0, -1)
-					vim.api.nvim_win_set_height(win_id, math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3))
+					vim.api.nvim_win_set_height(win_id, math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4))
 
 					local lines = vim.fn.split(content, '\n', true)
 					vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, lines)
@@ -196,10 +196,10 @@ local function create_window_explain(opts, callback)
 	-- Create window
   local win_id = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
     relative = "editor",
-    width = math.floor(vim.api.nvim_list_uis()[1].width * 2 / 3),
-    height =  math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    width = math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6),
+    height =  math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4),
     col = math.floor(vim.api.nvim_list_uis()[1].width * 1 / 6),
-    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 4 - 1),
     anchor = "NW",
     style = "minimal",
     border = "rounded",
@@ -261,7 +261,7 @@ local function create_window_explain(opts, callback)
 			vim.schedule(function()
 				if (vim.api.nvim_buf_is_valid(win_buf)) then
 					vim.api.nvim_buf_clear_namespace(win_buf, win_processing, 0, -1)
-					vim.api.nvim_win_set_height(win_id, math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3))
+					vim.api.nvim_win_set_height(win_id, math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4))
 
 					local lines = vim.fn.split(content, '\n', true)
 					vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, lines)
@@ -279,10 +279,10 @@ local function create_window_insert(opts, callback)
 	-- Create window
   local win_id = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
     relative = "editor",
-    width = math.floor(vim.api.nvim_list_uis()[1].width * 2 / 3),
-    height =  math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    width = math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6),
+    height =  math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4),
     col = math.floor(vim.api.nvim_list_uis()[1].width * 1 / 6),
-    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 4 - 1),
     anchor = "NW",
     style = "minimal",
     border = "rounded",
@@ -390,10 +390,10 @@ local function create_window_replace(opts, callback)
 	-- Create window
   local win_id = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
     relative = "editor",
-    width = math.floor(vim.api.nvim_list_uis()[1].width * 2 / 3),
-    height =  math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    width = math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6),
+    height =  math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4),
     col = math.floor(vim.api.nvim_list_uis()[1].width * 1 / 6),
-    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 3),
+    row = math.floor(vim.api.nvim_list_uis()[1].height * 1 / 4 - 1),
     anchor = "NW",
     style = "minimal",
     border = "rounded",
