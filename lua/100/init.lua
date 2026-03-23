@@ -5,6 +5,9 @@
 --TODO: reference skills
 --TODO: expand context
 
+local function setup(opts)
+end
+
 local function create_window_search(opts, callback)
 	return require('100.window').create_window_search(opts, callback)
 end
@@ -26,6 +29,7 @@ local function create_window_replace(opts, callback)
 end
 
 return {
+	setup = setup,
 	create_window_search = create_window_search,
 	create_window_query = create_window_query,
 	create_window_explain = create_window_explain,
