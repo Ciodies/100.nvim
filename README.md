@@ -131,5 +131,5 @@ To effectively utilize AI in a professional setting, you will require consistent
 - create_window_query_cwd (combination between `create_window_search` and `create_window_query` allowing for queries concerning project structure. I'm very much aware that this feature can however just be implemented using `create_window_query` at the current moment.)
 
 ## Noteworthy mentions:
-- Praise where praise is due, I cannot in good faith take full credit for the ai workflow this project demonstrates and inables. This achievement belongs to `ThePrimeagen`.
+- Praise where praise is due, I cannot in good faith take full credit for the ai workflow this project demonstrates and enables. This achievement belongs to `ThePrimeagen`.
 
