@@ -22,6 +22,7 @@ local function create_window_search(opts, callback)
 	vim.bo[win_buf].buftype = "acwrite"
 	vim.bo[win_buf].bufhidden = "wipe"
 	vim.bo[win_buf].swapfile = false
+	vim.bo[win_buf].modified = false
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
 	vim.cmd("startinsert")
@@ -68,11 +69,7 @@ local function create_window_search(opts, callback)
 	end,})
 
 	-- Setup events
-	vim.api.nvim_create_autocmd({"BufModifiedSet"}, { group = win_group, buffer = win_buf, callback = function()
-		vim.bo[win_buf].modified = false -- To enable :q and :w with acwrite
-	end,})
-
-  vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
+  vim.api.nvim_create_autocmd({"QuitPre", "WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
 		vim.api.nvim_win_close(win_id, true)
 	end,})
@@ -131,6 +128,7 @@ local function create_window_query(opts, callback)
 	vim.bo[win_buf].buftype = "acwrite"
 	vim.bo[win_buf].bufhidden = "wipe"
 	vim.bo[win_buf].swapfile = false
+	vim.bo[win_buf].modified = false
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
 	vim.cmd("startinsert")
@@ -149,11 +147,7 @@ local function create_window_query(opts, callback)
   end, { buffer = win_buf, nowait = true })
 
 	-- Setup events
-	vim.api.nvim_create_autocmd({"BufModifiedSet"}, { group = win_group, buffer = win_buf, callback = function()
-		vim.bo[win_buf].modified = false -- To enable :q and :w with acwrite
-	end,})
-
-  vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
+  vim.api.nvim_create_autocmd({"QuitPre", "WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
 		vim.api.nvim_win_close(win_id, true)
 	end,})
@@ -168,7 +162,7 @@ local function create_window_query(opts, callback)
 
 		-- Display Processing...
 		local win_processing = vim.api.nvim_create_namespace("100.window.hightlights")
-		vim.api.nvim_win_set_height(win_id, 1)
+		vim.api.nvim_win_resize(win_id, math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6), 1)
 		vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, {'Processing...'})
 		vim.api.nvim_buf_set_extmark( win_buf, win_processing, 0, 0, { end_row = 1, hl_group = "Comment" })
 
@@ -177,11 +171,12 @@ local function create_window_query(opts, callback)
 			vim.schedule(function()
 				if (vim.api.nvim_buf_is_valid(win_buf)) then
 					vim.api.nvim_buf_clear_namespace(win_buf, win_processing, 0, -1)
-					vim.api.nvim_win_set_height(win_id, math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4))
+					vim.api.nvim_win_resize(win_id, math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6), math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4))
 
 					local lines = vim.fn.split(content, '\n', true)
 					vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, lines)
 					vim.api.nvim_win_set_cursor(win_id, {1, 1})
+					vim.bo[win_buf].modified = false
 				end
 			end)
 		end, reject)
@@ -214,6 +209,7 @@ local function create_window_explain(opts, callback)
 	vim.bo[win_buf].buftype = "acwrite"
 	vim.bo[win_buf].bufhidden = "wipe"
 	vim.bo[win_buf].swapfile = false
+	vim.bo[win_buf].modified = false
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
 	vim.cmd("startinsert")
@@ -232,11 +228,7 @@ local function create_window_explain(opts, callback)
   end, { buffer = win_buf, nowait = true })
 
 	-- Setup events
-	vim.api.nvim_create_autocmd({"BufModifiedSet"}, { group = win_group, buffer = win_buf, callback = function()
-		vim.bo[win_buf].modified = false -- To enable :q and :w with acwrite
-	end,})
-
-  vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
+  vim.api.nvim_create_autocmd({"QuitPre", "WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
 		vim.api.nvim_win_close(win_id, true)
 	end,})
@@ -252,7 +244,7 @@ local function create_window_explain(opts, callback)
 
 		-- Display Processing...
 		local win_processing = vim.api.nvim_create_namespace("100.window.hightlights")
-		vim.api.nvim_win_set_height(win_id, 1)
+		vim.api.nvim_win_resize(win_id, math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6), 1)
 		vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, {'Processing...'})
 		vim.api.nvim_buf_set_extmark( win_buf, win_processing, 0, 0, { end_row = 1, hl_group = "Comment" })
 
@@ -261,11 +253,12 @@ local function create_window_explain(opts, callback)
 			vim.schedule(function()
 				if (vim.api.nvim_buf_is_valid(win_buf)) then
 					vim.api.nvim_buf_clear_namespace(win_buf, win_processing, 0, -1)
-					vim.api.nvim_win_set_height(win_id, math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4))
+					vim.api.nvim_win_resize(win_id, math.floor(vim.api.nvim_list_uis()[1].width * 4 / 6), math.floor(vim.api.nvim_list_uis()[1].height * 2 / 4))
 
 					local lines = vim.fn.split(content, '\n', true)
 					vim.api.nvim_buf_set_lines(win_buf, 0, -1, false, lines)
 					vim.api.nvim_win_set_cursor(win_id, {1, 1})
+					vim.bo[win_buf].modified = false
 				end
 			end)
 		end, reject)
@@ -297,6 +290,7 @@ local function create_window_insert(opts, callback)
 	vim.bo[win_buf].buftype = "acwrite"
 	vim.bo[win_buf].bufhidden = "wipe"
 	vim.bo[win_buf].swapfile = false
+	vim.bo[win_buf].modified = false
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
 	vim.cmd("startinsert")
@@ -343,11 +337,7 @@ local function create_window_insert(opts, callback)
 	end,})
 
 	-- Setup events
-	vim.api.nvim_create_autocmd({"BufModifiedSet"}, { group = win_group, buffer = win_buf, callback = function()
-		vim.bo[win_buf].modified = false -- To enable :q and :w with acwrite
-	end,})
-
-  vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
+  vim.api.nvim_create_autocmd({"QuitPre", "WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
 		vim.api.nvim_win_close(win_id, true)
 	end,})
@@ -408,6 +398,7 @@ local function create_window_replace(opts, callback)
 	vim.bo[win_buf].buftype = "acwrite"
 	vim.bo[win_buf].bufhidden = "wipe"
 	vim.bo[win_buf].swapfile = false
+	vim.bo[win_buf].modified = false
 	vim.wo[win_id].number = true
   vim.wo[win_id].wrap = true
 	vim.cmd("startinsert")
@@ -454,11 +445,7 @@ local function create_window_replace(opts, callback)
 	end,})
 
 	-- Setup events
-	vim.api.nvim_create_autocmd({"BufModifiedSet"}, { group = win_group, buffer = win_buf, callback = function()
-		vim.bo[win_buf].modified = false -- To enable :q and :w with acwrite
-	end,})
-
-  vim.api.nvim_create_autocmd({"WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
+  vim.api.nvim_create_autocmd({"QuitPre", "WinLeave", "BufWinLeave", "BufUnload"}, { group = win_group, buffer = win_buf, callback = function()
 		vim.api.nvim_del_augroup_by_id(win_group)
 		vim.api.nvim_win_close(win_id, true)
 	end,})
